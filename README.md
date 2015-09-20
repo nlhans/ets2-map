@@ -15,15 +15,19 @@ ETS2 maps are built basically by 2 main assets:
 - Roads; these of course is the stuff you drive on.
 - Prefabs; these are "prebuilt packages" that can be companies, garages, but most importantly junctions and other "road glue" for map editors to create wicked roads.
 
-All other objects in the game are basically auxiliary to navigation maps. 
+All other objects in the game are auxiliary to navigation maps, and not necessarily needed for generating maps. However, the following objects may be of interest:
 
-As of now the software uses some LUT (Look Up Tables) to identify what type of road or prefab corresponds to in-game values. These are shipped in this repository. It is very likely these may need to be updated per game version and/or expanded for mods that use their own prefabs.
+- City regions, so city names can be rendered
+- Services, like rest stops and fuel stations
+- Garage & Company prefabs
+- Toll gates
+- Docks + dock routes
 
 ##Setting up
 
 In order to set-up for a demo, you need to manually extract the following:
 
-- Raw map information. This is located in base.scs at base/map/europe/ (or within a mod). Use the [http://www.eurotrucksimulator2.com/mod_tools.php](SCS extractor) to extract def.scs and extract the map data. Put all *.base files in SCS/europe/. 
+- Raw map information. This is located in base.scs at base/map/europe/ (or within a mod). Use the [SCS extractor](http://www.eurotrucksimulator2.com/mod_tools.php) to extract def.scs and extract the map data. Put all *.base files in SCS/europe/. 
 
 - Prefab information. These are also located in the base.scs. Extract this file as well with the SCS extractor, and locate the base/prefab/ folder. Put all *.ppd files in SCS/prefab. There are some duplicates; just ignore these because this has not been supported yet.
 
