@@ -145,8 +145,8 @@ namespace Ets2Map
                     Prefab = sector.Mapper.LookupPrefab(prefabId);
                     if (Prefab == null)
                     {
-                        Console.WriteLine("Prefab ID: " + uid.ToString("X16") + " / " + prefabId.ToString("X") +
-                                          " not found");
+                        //Console.WriteLine("Prefab ID: " + uid.ToString("X16") + " / " + prefabId.ToString("X") +
+                        //                  " not found");
                     }
                     break;
 
@@ -341,7 +341,6 @@ namespace Ets2Map
                     else
                     {
                         StartNodeUID = NodeID;
-                        //Console.WriteLine(CityID.ToString("X16") + " === " + City);
                     }
                     BlockSize = 81;
                     break;
@@ -350,9 +349,6 @@ namespace Ets2Map
                     Valid = false;
                     break;
             }
-
-            //if (Valid)
-            //    Console.WriteLine("Item " + uid.ToString("X16") + " (" + Type.ToString() + ") is found at " + offset.ToString("X"));
         }
 
         /// <summary>

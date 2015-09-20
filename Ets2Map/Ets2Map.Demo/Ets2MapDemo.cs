@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Ets2Map.Demo
@@ -34,7 +28,7 @@ namespace Ets2Map.Demo
                 projectMap + @"SCS\prefab",
                 projectMap + @"SCS\LUT1.19",
                 projectMap + @"LUT\LUT1.19");
-            map.Parse();
+            map.Parse(true);
 
             render = new MapRenderer(map, new SimpleMapPalette());
 

@@ -4,37 +4,51 @@ namespace Ets2Map
 {
     public static class ByteSearchMethods
     {
-        public static unsafe List<int> IndexesOf(this byte[] Haystack, byte[] Needle)
+        public static unsafe List<int> IndexesOf(this byte[] haystack, byte[] needle)
         {
-            List<int> Indexes = new List<int>();
-            fixed (byte* H = Haystack)
-            fixed (byte* N = Needle)
+            var indexes = new List<int>();
+            fixed (byte* h = haystack)
+            fixed (byte* n = needle)
             {
-                int i = 0;
-                for (byte* hNext = H, hEnd = H + Haystack.Length; hNext < hEnd; i++, hNext++)
+                var i = 0;
+
+                for (byte* hNext = h, hEnd = h + haystack.Length; hNext < hEnd; i++, hNext++)
                 {
-                    bool Found = true;
-                    for (byte* hInc = hNext, nInc = N, nEnd = N + Needle.LongLength;
-                        Found && nInc < nEnd;
-                        Found = *nInc == *hInc, nInc++, hInc++) ;
-                    if (Found) Indexes.Add(i);
+                    var found = true;
+                    
+                    for (byte* hInc = hNext, nInc = n, nEnd = n + needle.LongLength;
+                        found && nInc < nEnd;
+                        found = *nInc == *hInc, nInc++, hInc++)
+                    {
+
+                    }
+
+                    if (found)
+                    {
+                        indexes.Add(i);
+                    }
                 }
-                return Indexes;
+                return indexes;
             }
         }
 
-        public static unsafe List<int> IndexesOfUlong(this byte[] Haystack, byte[] Needle)
+        public static unsafe List<int> IndexesOfUlong(this byte[] haystack, byte[] needle)
         {
-            List<int> Indexes = new List<int>();
-            fixed (byte* H = Haystack)
-            fixed (byte* N = Needle)
+            var indexes = new List<int>();
+            fixed (byte* h = haystack)
+            fixed (byte* n = needle)
             {
-                int i = 0;
-                for (byte* hNext = H, hEnd = H + Haystack.Length; hNext < hEnd; i++, hNext++)
+                var i = 0;
+
+                for (byte* hNext = h, hEnd = h + haystack.Length; hNext < hEnd; i++, hNext++)
                 {
-                    if (*((ulong*) hNext) == *((ulong*) N)) Indexes.Add(i);
+                    if (*((ulong*) hNext) == *((ulong*) n))
+                    {
+                        indexes.Add(i);
+                    }
                 }
-                return Indexes;
+
+                return indexes;
             }
         }
     }

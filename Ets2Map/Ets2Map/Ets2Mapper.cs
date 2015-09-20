@@ -215,9 +215,8 @@ namespace Ets2Map
             }
         }
 
-        public void Parse()
+        public void Parse(bool skipMultiSectors)
         {
-            ThreadPool.SetMaxThreads(2, 2);
             Loading = true;
 
             // First load prefabs
@@ -236,45 +235,49 @@ namespace Ets2Map
 
             Loading = false;
 
-            // Now find all that were not ofund
-            ItemSearchRequests.Clear();
-            Console.WriteLine(ItemSearchRequests.Count +
-                              " were not found; attempting to search them through all sectors");
-            foreach (var req in ItemSearchRequests)
+            // Some nodes may refer to items in other sectors.
+            // We can search all sectors for those, but this is relatively slow process.
+            if (!skipMultiSectors)
             {
-                Ets2Item item = Sectors.Select(sec => sec.FindItem(req.ItemUID)).FirstOrDefault(tmp => tmp != null);
-
-                if (item == null)
+                // Now find all that were not found
+                Console.WriteLine(ItemSearchRequests.Count +
+                                  " were not found; attempting to search them through all sectors");
+                foreach (var req in ItemSearchRequests)
                 {
-                    Console.WriteLine("Still couldn't find node " + req.ItemUID.ToString("X16"));
-                }
-                else
-                {
-                    if (req.IsBackward)
-                    {
-                        item.Apply(req.Node);
-                        req.Node.BackwardItem = item;
-                    }
-                    if (req.IsForward)
-                    {
-                        item.Apply(req.Node);
-                        req.Node.ForwardItem = item;
-                    }
+                    Ets2Item item = Sectors.Select(sec => sec.FindItem(req.ItemUID)).FirstOrDefault(tmp => tmp != null);
 
-                    if (item.StartNode == null && item.StartNodeUID != null)
+                    if (item == null)
                     {
-                        Ets2Node startNode;
-                        if (Nodes.TryGetValue(item.StartNodeUID, out startNode))
-                            item.Apply(startNode);
+                        Console.WriteLine("Still couldn't find node " + req.ItemUID.ToString("X16"));
                     }
-                    if (item.EndNode == null && item.EndNodeUID != null)
+                    else
                     {
-                        Ets2Node endNode;
-                        if (Nodes.TryGetValue(item.EndNodeUID, out endNode))
-                            item.Apply(endNode);
-                    }
+                        if (req.IsBackward)
+                        {
+                            item.Apply(req.Node);
+                            req.Node.BackwardItem = item;
+                        }
+                        if (req.IsForward)
+                        {
+                            item.Apply(req.Node);
+                            req.Node.ForwardItem = item;
+                        }
 
-                    Console.Write(".");
+                        if (item.StartNode == null && item.StartNodeUID != null)
+                        {
+                            Ets2Node startNode;
+                            if (Nodes.TryGetValue(item.StartNodeUID, out startNode))
+                                item.Apply(startNode);
+                        }
+                        if (item.EndNode == null && item.EndNodeUID != null)
+                        {
+                            Ets2Node endNode;
+                            if (Nodes.TryGetValue(item.EndNodeUID, out endNode))
+                                item.Apply(endNode);
+                        }
+
+                        Console.Write(".");
+                    }
                 }
             }
 
@@ -299,9 +302,7 @@ namespace Ets2Map
             // The nodes we identify as prefabs (cross points etc.)
             // Distance between them are the roads
             // This way we don't have to walk through each road segment (which can be hundreds or thousands) each time we want to know the node-node length
-            // This is a reduction of approximately 6x
-            Dictionary<ulong, Dictionary<ulong, float>> cache = new Dictionary<ulong, Dictionary<ulong, float>>();
-
+            // This is a reduction of approximately 6x for the current Europe map.
             foreach (var prefab in Items.Values.Where(x => x.HideUI == false && x.Type == Ets2ItemType.Prefab))
             {
                 foreach (var node in prefab.NodesList.Values)
@@ -314,7 +315,7 @@ namespace Ets2Map
                     : node.ForwardItem;
                     var totalLength = 0.0f;
                     var weight = 0.0f;
-                    List<Ets2Item> roadList = new List<Ets2Item>();
+                    var roadList = new List<Ets2Item>();
                     while (road != null)
                     {
                         if (road.StartNode == null || road.EndNode == null)

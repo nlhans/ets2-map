@@ -21,8 +21,6 @@ namespace Ets2Map
         private int FooterStart { get; set; }
         public byte[] Stream { get; private set; }
 
-        private Dictionary<int, int> FileMap = new Dictionary<int, int>();
-
         public Ets2Sector(Ets2Mapper mapper, string file)
         {
             Mapper = mapper;
@@ -39,8 +37,6 @@ namespace Ets2Map
         public void ParseNodes()
         {
             if (Empty) return;
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
 
             // First determine the number of positions in this file
             var nodesPieces = BitConverter.ToInt32(Stream, 0x10);
@@ -70,16 +66,12 @@ namespace Ets2Map
                 }
 
             } while (i > 60);
-            //Console.WriteLine("Thereby footer starts at " + FooterStart.ToString("X16"));
+
             if (FooterStart < 0)
             {
                 NoFooterError = true;
                 return;
             }
-
-            sw.Stop();
-            //Console.WriteLine(Path.GetFileNameWithoutExtension(FilePath) + " contains " + Nodes.Count +
-            //                  " nodes; parsed in " + sw.ElapsedMilliseconds + "ms");
         }
 
         public void ParseItems()
@@ -93,48 +85,12 @@ namespace Ets2Map
             }
         }
 
-        private IEnumerable<int> SearchUID(byte[] uid)
-        {
-            return Stream.IndexesOfUlong(uid);
-            byte firstMatchByte = uid[0];
-            for (int i = 0; i < FooterStart - 8; i++)
-            {
-                if (firstMatchByte == Stream[i])
-                {
-                    byte[] match = new byte[8];
-                    Array.Copy(Stream, i, match, 0, 8);
-                    if (match.SequenceEqual<byte>(uid))
-                    {
-                        //yield return i;
-                        i += 8;
-                    }
-                }
-            }
-        }
-
         public Ets2Item FindItem(ulong uid)
         {
-            Tuple<string, int> inp;
             if (uid == 0)
                 return null;
-            /*if (Mapper.ItemCache.TryGetValue(uid, out inp))
-            {
-                var item = new Ets2Item(uid,
-                    Mapper.Sectors.FirstOrDefault(x => Path.GetFileNameWithoutExtension(x.FilePath) == inp.Item1),
-                    inp.Item2);
-                if (!item.Valid)
-                {
-                    lock (Mapper.ItemCache)
-                    {
-                        Mapper.ItemCache.Remove(uid);
-                    }
-                }
-                else
-                {
-                    return item;
-                }
-            }*/
-            var pos = SearchUID(BitConverter.GetBytes(uid));
+
+            var pos = Stream.IndexesOfUlong(BitConverter.GetBytes(uid));
 
             foreach (var off in pos)
             {
@@ -147,12 +103,6 @@ namespace Ets2Map
                     var item = new Ets2Item(uid, this, offs);
                     if (item.Valid)
                     {
-                        /*lock (Mapper.ItemCache)
-                        {
-                            Mapper.ItemCache.Add(uid,
-                                new Tuple<string, int>(Path.GetFileNameWithoutExtension(FilePath), offs));
-                        }*/
-
                         return item;
                     }
                 }

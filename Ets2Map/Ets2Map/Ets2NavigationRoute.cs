@@ -31,7 +31,9 @@ namespace Ets2Map
             Mapper = mapper;
 
             if (Start != End)
-            ThreadPool.QueueUserWorkItem(new WaitCallback(FindRoute));
+            {
+                ThreadPool.QueueUserWorkItem(FindRoute);
+            }
         }
 
         private void FindRoute(object state)
@@ -126,6 +128,14 @@ namespace Ets2Map
             }
             routeNodes.Add(Start);
             segments.Reverse();
+
+            Roads = routeRoads;
+            Prefabs = routeNodes.Select(x => new Tuple<Ets2Item, int, int>(x, 0, 0)).ToList();
+            Loading = false;
+
+            // TODO: find routes on prefabs
+            // The following code is a start to that, but not finished yet.
+            // It divides the route into segments, that describe the path(s) on a road or prefab to get from A to B.
 
             // Find entry/exit of start/end segment
             var foundDst = float.MaxValue;
@@ -279,10 +289,6 @@ namespace Ets2Map
             //if (segments[segments.Count - 1].Options.Any()) segments[segments.Count - 1].Options[0].Valid = true;
 
             Segments = segments;
-            var pts = Segments.SelectMany(x => x.Solutions).SelectMany(x => x.Points).ToList();
-            Roads = routeRoads;
-            Prefabs = routeNodes.Select(x => new Tuple<Ets2Item, int, int>(x, 0, 0)).ToList();
-            Loading = false;
         }
 
     }

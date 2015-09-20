@@ -13,7 +13,7 @@ namespace Ets2Map
         public int MinY;
         public int MaxX;
         public int MaxY;
-        
+
         public Ets2Company(string line, Ets2Mapper mapper)
         {
             Mapper = mapper;
@@ -21,6 +21,7 @@ namespace Ets2Map
             var d = line.Split(",".ToCharArray());
 
             PrefabID = d[0];
+
             int.TryParse(d[1], out MinX);
             int.TryParse(d[2], out MinY);
             int.TryParse(d[3], out MaxX);
@@ -29,7 +30,7 @@ namespace Ets2Map
             // find prefab obj
             Prefab = mapper.PrefabsLookup.FirstOrDefault(x => x.IDSII == PrefabID);
 
-            if (Prefab!=null)
+            if (Prefab != null)
                 Prefab.Company = this;
         }
     }
