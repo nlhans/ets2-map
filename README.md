@@ -1,3 +1,5 @@
+Due to personal time & energy constraints, I'm unable to maintain this repository for the community. Please refer to [dariowouters' implementation](https://github.com/dariowouters/ts-map) for a version that features newer versions of the SCS SDK.
+
 #Euro Truck Simulator 2 Map
 
 This repository is middle-ware for software developers to integrate ETS2 maps into their widgets. It will also help with building a route advisor.
