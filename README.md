@@ -1,4 +1,4 @@
-Due to personal time & energy constraints, I'm unable to maintain this repository for the community. Please refer to [dariowouters' implementation](https://github.com/dariowouters/ts-map) for a version that features newer versions of the SCS SDK.
+Due to personal time & energy constraints, I'm unable to maintain this repository for the community. Please refer to [dariowouters' implementation](https://github.com/dariowouters/ts-map) for a version that features expanded functionality & bug fixes for reading ETS2 and ATS maps.
 
 #Euro Truck Simulator 2 Map
 
